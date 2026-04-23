@@ -4,10 +4,10 @@ import { profile } from "@/data/resume";
 import { useEffect, useState } from "react";
 
 const navLinks = [
-  { label: "Profile", href: "#profile" },
-  { label: "Experience", href: "#experience" },
-  { label: "Education", href: "#education" },
+  { label: "Work", href: "#experience" },
   { label: "Skills", href: "#skills" },
+  { label: "Education", href: "#education" },
+  { label: "Contact", href: "#contact" },
 ];
 
 export default function Navbar() {
@@ -43,47 +43,61 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-navy-950/90 backdrop-blur-md border-b border-white/10 shadow-lg" : ""
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
+          ? "bg-navy-950/80 backdrop-blur-xl border-b border-white/6"
+          : ""
         }`}
     >
       <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <span className="text-teal font-bold text-lg tracking-tight">
-          {profile.name.split(" ")[0]}
-          <span className="text-white">.{profile.name.split(" ")[1]}</span>
-        </span>
-
-        <ul className="hidden md:flex items-center gap-1">
-          {navLinks.map(({ label, href }) => (
-            <li key={href}>
-              <a
-                href={href}
-                onClick={(e) => handleClick(e, href)}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${activeSection === href.slice(1)
-                    ? "text-teal bg-teal/10"
-                    : "text-slate-400 hover:text-white hover:bg-white/5"
-                  }`}
-              >
-                {label}
-              </a>
-            </li>
-          ))}
-        </ul>
-
+        {/* Wordmark */}
         <a
-          href={`mailto:${profile.email}`}
-          className="hidden md:inline-flex items-center gap-2 text-sm px-4 py-2 rounded-md border border-teal/40 text-teal hover:bg-teal hover:text-navy-950 transition-all duration-200 font-medium"
+          href="#"
+          onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+          className="font-(family-name:--font-heading) font-bold text-lg tracking-tight text-white hover:opacity-80 transition-opacity"
         >
-          Hire Me
+          {profile.name.split(" ")[0]}
+          <span className="text-brand-purple">&nbsp;{profile.name.split(" ")[1]}</span>
         </a>
 
-        {/* Mobile: simple stacked links */}
+        <div className="flex items-center gap-6">
+          {/* Nav links */}
+          <ul className="hidden md:flex items-center gap-1">
+            {navLinks.map(({ label, href }) => {
+              const isActive = activeSection === href.replace("#", "");
+              return (
+                <li key={href}>
+                  <a
+                    href={href}
+                    onClick={(e) => handleClick(e, href)}
+                    className={`font-label text-sm px-3 py-1.5 rounded-lg transition-all duration-200 ${isActive
+                        ? "text-brand-purple bg-brand-purple/10"
+                        : "text-[#71717A] hover:text-white hover:bg-white/5"
+                      }`}
+                  >
+                    {label}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* Availability badge */}
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#00C9B1]/30 bg-[#00C9B1]/5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00C9B1] animate-pulse" />
+            <span className="font-label text-xs text-[#00C9B1] font-medium tracking-wide whitespace-nowrap">
+              Available · Berlin
+            </span>
+          </div>
+        </div>
+
+        {/* Mobile links */}
         <div className="md:hidden flex gap-3">
           {navLinks.map(({ label, href }) => (
             <a
               key={href}
               href={href}
               onClick={(e) => handleClick(e, href)}
-              className="text-xs text-slate-400 hover:text-teal transition-colors"
+              className="text-xs text-[#71717A] hover:text-white transition-colors"
             >
               {label}
             </a>
