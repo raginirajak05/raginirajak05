@@ -1,156 +1,96 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { profile } from "@/data/resume";
-import { Badge } from "@/components/ui/badge";
-import { Mail, Phone, Link2, MapPin } from "lucide-react";
 
-// Pretext canvas typewriter animation for the hero headline
-function HeroCanvas({ text, font }: { text: string; font: string }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const frameRef = useRef<number>(0);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    // Respect reduced-motion preference
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    const dpr = window.devicePixelRatio || 1;
-    let width = canvas.parentElement?.offsetWidth ?? 600;
-
-    const resize = () => {
-      width = canvas.parentElement?.offsetWidth ?? 600;
-      canvas.width = width * dpr;
-      canvas.height = 80 * dpr;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = "80px";
-    };
-    resize();
-
-    const ctx = canvas.getContext("2d")!;
-    ctx.scale(dpr, dpr);
-
-    if (prefersReduced) {
-      // Static render — no animation
-      ctx.clearRect(0, 0, width, 80);
-      ctx.font = font;
-      ctx.fillStyle = "#00C9B1";
-      ctx.fillText(text, 0, 56);
-      return;
-    }
-
-    // Typewriter: reveal one character at a time
-    let charCount = 0;
-    const totalChars = text.length;
-    const delay = 55; // ms per char
-    let lastTime = 0;
-
-    const draw = (timestamp: number) => {
-      if (timestamp - lastTime < delay) {
-        frameRef.current = requestAnimationFrame(draw);
-        return;
-      }
-      lastTime = timestamp;
-
-      ctx.clearRect(0, 0, width, 80);
-      ctx.font = font;
-      ctx.fillStyle = "#00C9B1";
-
-      const visible = text.slice(0, charCount);
-      ctx.fillText(visible, 0, 56);
-
-      // Blinking cursor
-      if (charCount < totalChars || Math.floor(timestamp / 500) % 2 === 0) {
-        const cursorX = ctx.measureText(visible).width + 2;
-        ctx.fillRect(cursorX, 14, 3, 48);
-      }
-
-      if (charCount < totalChars) charCount++;
-      frameRef.current = requestAnimationFrame(draw);
-    };
-
-    frameRef.current = requestAnimationFrame(draw);
-
-    const ro = new ResizeObserver(resize);
-    if (canvas.parentElement) ro.observe(canvas.parentElement);
-
-    return () => {
-      cancelAnimationFrame(frameRef.current);
-      ro.disconnect();
-    };
-  }, [text, font]);
-
-  return <canvas ref={canvasRef} aria-label={text} />;
-}
+const marqueeText = "GTM STRATEGY · PRODUCT LAUNCHES · COMMUNITY GROWTH · WEB3 · SAAS · BRAND MARKETING · ";
 
 export default function Hero() {
   return (
     <section
       id="profile"
-      className="min-h-screen flex flex-col justify-center pt-24 pb-16 px-6"
+      className="relative min-h-screen flex flex-col justify-center overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto w-full">
-        {/* Animated name via canvas + Pretext */}
-        <div className="mb-2 w-full overflow-hidden">
-          <HeroCanvas text={profile.name} font="bold 56px Inter, sans-serif" />
+      {/* Background glow */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-225 h-175 rounded-full bg-brand-purple/8 blur-[140px]" />
+        <div className="absolute top-1/3 -left-20 w-100 h-100 rounded-full bg-brand-pink/5 blur-[120px]" />
+        <div className="absolute top-1/4 -right-20 w-87.5 h-87.5 rounded-full bg-brand-teal/5 blur-[100px]" />
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-28 pb-8 w-full">
+        {/* Label */}
+        <p className="font-label text-xs font-semibold tracking-[0.2em] uppercase text-[#71717A] mb-6">
+          GTM &amp; Product Marketing Manager · Berlin
+        </p>
+
+        {/* Giant name */}
+        <h1 className="font-heading font-extrabold leading-none tracking-tighter mb-6">
+          <span className="block text-[clamp(3rem,10vw,7rem)] text-white">
+            {profile.name.split(" ")[0]}
+          </span>
+          <span className="block text-[clamp(3rem,10vw,7rem)] gradient-text">
+            {profile.name.split(" ")[1]}
+          </span>
+        </h1>
+
+        {/* Subtitle */}
+        <p className="text-[#71717A] text-lg md:text-xl mb-12 max-w-lg leading-relaxed">
+          SaaS &amp; Web3 &middot; 4+ years building brands from&nbsp;
+          <span className="text-white font-medium">0→1</span>
+        </p>
+
+        {/* Stats row */}
+        <div className="flex flex-wrap gap-10 mb-12">
+          {[
+            { num: "90K+", label: "Community Members" },
+            { num: "$25M", label: "TVL Reached" },
+            { num: "5+", label: "Product Launches" },
+          ].map(({ num, label }) => (
+            <div key={label} className="flex flex-col gap-1">
+              <span className="font-heading font-bold text-3xl md:text-4xl text-[#00C9B1] leading-none">
+                {num}
+              </span>
+              <span className="font-label text-xs text-[#71717A] uppercase tracking-widest">
+                {label}
+              </span>
+            </div>
+          ))}
         </div>
 
-        <h2 className="text-xl md:text-2xl font-semibold text-white mb-1">
-          {profile.title}
-        </h2>
-        <p className="text-slate-400 mb-8 text-base">{profile.subtitle}</p>
-
-        {/* Contact row */}
-        <div className="flex flex-wrap items-center gap-3 mb-12">
+        {/* CTAs */}
+        <div className="flex flex-wrap gap-3">
           <a
-            href={`mailto:${profile.email}`}
-            className="flex items-center gap-2 text-sm text-slate-300 hover:text-teal transition-colors"
+            href="#experience"
+            onClick={(e) => {
+              e.preventDefault();
+              document.querySelector("#experience")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-linear-to-r from-brand-purple to-brand-pink text-white font-label font-semibold text-sm hover:opacity-90 transition-opacity"
           >
-            <Mail size={15} />
-            {profile.email}
+            View My Work →
           </a>
-          <span className="text-slate-600">·</span>
-          <span className="flex items-center gap-2 text-sm text-slate-300">
-            <Phone size={15} />
-            {profile.phone}
-          </span>
-          <span className="text-slate-600">·</span>
           <a
             href={profile.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm text-slate-300 hover:text-teal transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-white/15 text-white font-label font-semibold text-sm hover:border-brand-purple/50 hover:bg-brand-purple/5 transition-all"
           >
-            <Link2 size={15} />
-            LinkedIn
+            LinkedIn ↗
           </a>
-          <span className="text-slate-600">·</span>
-          <span className="flex items-center gap-2 text-sm text-slate-300">
-            <MapPin size={15} />
-            Berlin, Germany
-          </span>
-          <Badge className="ml-1 bg-teal/15 text-teal border-teal/30 text-xs">
-            {profile.visaStatus}
-          </Badge>
         </div>
+      </div>
 
-        {/* Summary */}
-        <div className="max-w-3xl">
-          <div className="h-px bg-gradient-to-r from-teal/40 to-transparent mb-8" />
-          <p className="text-slate-300 text-base leading-relaxed">
-            {profile.summary}
-          </p>
-        </div>
-
-        {/* Scroll hint */}
-        <div className="mt-16 flex items-center gap-3 text-slate-500 text-sm">
-          <div className="flex flex-col gap-1">
-            <div className="w-0.5 h-6 bg-teal/40 mx-auto rounded" />
-            <div className="w-0.5 h-3 bg-teal/20 mx-auto rounded" />
-          </div>
-          Scroll to explore
+      {/* Marquee strip */}
+      <div className="relative z-10 mt-8 border-t border-white/6 overflow-hidden py-4 bg-navy-950/50">
+        <div className="flex animate-marquee whitespace-nowrap">
+          {[...Array(4)].map((_, i) => (
+            <span
+              key={i}
+              className="font-label text-xs font-medium tracking-[0.18em] text-brand-purple/40 mr-0"
+            >
+              {marqueeText}
+            </span>
+          ))}
         </div>
       </div>
     </section>

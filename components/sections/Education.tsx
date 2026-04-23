@@ -2,10 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { education, certifications, languages } from "@/data/resume";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { GraduationCap, Languages, Award } from "lucide-react";
 
 function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -33,48 +29,46 @@ function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
 
 export default function Education() {
   return (
-    <section id="education" className="py-24 px-6 bg-navy-900/40">
+    <section id="education" className="py-24 px-6 bg-[#111118]/50">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center gap-4 mb-12">
-          <h2 className="text-3xl font-bold text-white">Education</h2>
-          <div className="h-px flex-1 bg-gradient-to-r from-teal/40 to-transparent" />
+        {/* Section header */}
+        <div className="mb-12">
+          <p className="font-label text-xs font-semibold tracking-[0.2em] uppercase text-[#71717A] mb-3">
+            04 / Education
+          </p>
+          <h2 className="font-heading font-bold text-4xl md:text-5xl text-white">
+            Education
+          </h2>
         </div>
 
         {/* Degree cards */}
         <div className="grid md:grid-cols-2 gap-6 mb-16">
           {education.map((edu, i) => (
             <FadeIn key={i} delay={i * 0.1}>
-              <Card className="bg-navy-950/80 border border-white/10 hover:border-teal/30 transition-all duration-300 h-full">
-                <CardContent className="p-6 flex flex-col gap-3">
-                  <div className="flex items-start gap-3">
-                    <GraduationCap className="text-teal mt-0.5 flex-shrink-0" size={20} />
-                    <div className="flex-1">
-                      <h3 className="text-white font-semibold text-base leading-tight">
-                        {edu.degree}
-                      </h3>
-                      <p className="text-teal text-sm font-medium mt-0.5">{edu.institution}</p>
-                      <p className="text-slate-500 text-xs mt-0.5">{edu.location}</p>
-                    </div>
-                    <Badge className="bg-teal/10 text-teal border-teal/20 text-xs flex-shrink-0">
-                      {edu.grade}
-                    </Badge>
+              <div className="glass-card rounded-2xl p-6 h-full flex flex-col gap-4 border-l-[3px] border-l-[#A78BFA]">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1">
+                    <h3 className="font-heading font-bold text-white text-lg leading-tight">
+                      {edu.degree}
+                    </h3>
+                    <p className="text-[#A78BFA] text-sm font-medium mt-1">{edu.institution}</p>
+                    <p className="text-[#71717A] text-xs mt-0.5">{edu.location} · {edu.period}</p>
                   </div>
+                  <span className="font-label text-xs font-bold px-2.5 py-1 rounded-full bg-[#A78BFA]/15 text-[#A78BFA] border border-[#A78BFA]/30 shrink-0">
+                    {edu.grade}
+                  </span>
+                </div>
 
-                  <Separator className="bg-white/5" />
-
-                  <p className="text-slate-500 text-xs">{edu.period}</p>
-
-                  {edu.thesis && (
-                    <p className="text-slate-400 text-xs leading-relaxed border-l-2 border-teal/30 pl-3 italic">
-                      <span className="text-slate-300 not-italic font-medium">Thesis: </span>
-                      {edu.thesis}
-                    </p>
-                  )}
-                  {edu.note && (
-                    <p className="text-slate-400 text-xs leading-relaxed italic">{edu.note}</p>
-                  )}
-                </CardContent>
-              </Card>
+                {edu.thesis && (
+                  <p className="text-[#71717A] text-xs leading-relaxed border-l-2 border-[#A78BFA]/20 pl-3 italic">
+                    <span className="text-slate-300 not-italic font-medium">Thesis: </span>
+                    {edu.thesis}
+                  </p>
+                )}
+                {edu.note && (
+                  <p className="text-[#71717A] text-xs leading-relaxed italic">{edu.note}</p>
+                )}
+              </div>
             </FadeIn>
           ))}
         </div>
@@ -83,17 +77,17 @@ export default function Education() {
         <div className="grid md:grid-cols-2 gap-10">
           <FadeIn delay={0.2}>
             <div>
-              <div className="flex items-center gap-2 mb-5">
-                <Languages className="text-teal" size={18} />
-                <h3 className="text-white font-semibold text-lg">Languages</h3>
-              </div>
-              <div className="space-y-3">
+              <h3 className="font-label text-xs font-semibold uppercase tracking-widest text-[#00C9B1] mb-5">
+                Languages
+              </h3>
+              <div className="flex flex-wrap gap-2">
                 {languages.map((lang, i) => (
-                  <div key={i} className="flex items-center justify-between">
-                    <span className="text-slate-300 text-sm font-medium">{lang.language}</span>
-                    <Badge className="bg-white/5 text-slate-400 border-white/10 text-xs">
-                      {lang.level}
-                    </Badge>
+                  <div
+                    key={i}
+                    className="font-label text-xs px-3 py-1.5 rounded-full border border-[#00C9B1]/25 bg-[#00C9B1]/8 text-white/80"
+                  >
+                    <span className="font-semibold text-[#00C9B1]">{lang.language}</span>
+                    <span className="text-[#71717A] ml-1.5">{lang.level}</span>
                   </div>
                 ))}
               </div>
@@ -102,14 +96,13 @@ export default function Education() {
 
           <FadeIn delay={0.3}>
             <div>
-              <div className="flex items-center gap-2 mb-5">
-                <Award className="text-teal" size={18} />
-                <h3 className="text-white font-semibold text-lg">Certifications & Leadership</h3>
-              </div>
+              <h3 className="font-label text-xs font-semibold uppercase tracking-widest text-[#F472B6] mb-5">
+                Certifications &amp; Leadership
+              </h3>
               <ul className="space-y-3">
                 {certifications.map((cert, i) => (
-                  <li key={i} className="flex gap-2 text-slate-300 text-sm leading-relaxed">
-                    <span className="text-teal mt-1.5 flex-shrink-0 text-xs">▸</span>
+                  <li key={i} className="flex gap-3 text-slate-300 text-sm leading-relaxed">
+                    <span className="text-[#F472B6] mt-1.5 shrink-0 text-xs">›</span>
                     {cert}
                   </li>
                 ))}
